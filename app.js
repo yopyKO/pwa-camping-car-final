@@ -13,14 +13,21 @@ let currentWaypointIndex = 0;
 let waypointMarkers = [];
 let progressLine = null;
 
-// --- Géocodage adresse avec Nominatim ---
+// Géocodage adresse avec Nominatim
 async function geocode(address) {
   const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
   const res = await fetch(url);
   const data = await res.json();
-  if(data && data.length>0) return [parseFloat(data[0].lat),parseFloat(data[0].lon)];
-  else throw new Error("Adresse introuvable : "+address);
+
+  if(data && data.length > 0) {
+    const lat = parseFloat(data[0].lat);
+    const lon = parseFloat(data[0].lon);
+    return [lat, lon];  // renvoie bien [lat, lon] en nombres
+  } else {
+    throw new Error("Adresse introuvable : " + address);
+  }
 }
+
 
 // --- Haversine distance en km ---
 function distanceKm(p1,p2){
