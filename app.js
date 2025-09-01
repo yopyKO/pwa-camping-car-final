@@ -62,7 +62,7 @@ async function calcRoutesWithCoords(start,end){
   document.getElementById("status").innerText="Calcul itinéraires...";
 
   const urlCar = `https://graphhopper.com/api/1/route?point=${startStr}&point=${endStr}&vehicle=car&locale=fr&key=${GH_KEY}&points_encoded=false`;
-  const urlTruck = `https://graphhopper.com/api/1/route?point=${startStr}&point=${endStr}&vehicle=truck&locale=fr&key=${GH_KEY}&points_encoded=false`;
+  const urlTruck = `https://graphhopper.com/api/1/route?point=${startStr}&point=${endStr}&vehicle=car&locale=fr&key=${GH_KEY}&points_encoded=false`;
 
   try{
     const [resCar,resTruck] = await Promise.all([fetch(urlCar),fetch(urlTruck)]);
