@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PWA Camping-Car GPS</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <h1>GPS Camping-Car 🚐</h1>
+
+  <div id="controls">
+    <input id="start" placeholder="Adresse de départ">
+    <input id="end" placeholder="Adresse d'arrivée">
+    <button onclick="calcRoutesFromAddresses()">Calculer itinéraire</button>
+    <button onclick="startTrackingWaypoints()">Démarrer suivi GPS</button>
+  </div>
+
+  <!-- Bannière sponsorisée -->
+  <div id="sponsor-banner">
+    <a href="https://www.exemple-camping.com" target="_blank">
+      <img src="https://via.placeholder.com/320x50?text=Sponsor+Camping" alt="Sponsor Camping">
+    </a>
+  </div>
+
+  <!-- Tableau de bord -->
+  <div id="dashboard">
+    <p>Waypoint actuel : <span id="wp-index">0</span> / <span id="wp-total">0</span></p>
+    <p>Distance au prochain waypoint : <span id="wp-dist">0</span> km</p>
+    <p>ETA (approx.) : <span id="wp-eta">0</span> min</p>
+  </div>
+
+  <!-- Carte -->
+  <div id="map"></div>
+
+  <!-- Section affiliation ciblée -->
+  <div id="affiliation">
+    <h3>Services recommandés</h3>
+    <ul>
+      <li><a href="https://www.exemple-camping.com?ref=TONCODEAFFILIE" target="_blank">Camping A proximité</a></li>
+      <li><a href="https://www.exemple-carburant.com?ref=TONCODEAFFILIE" target="_blank">Carburant</a></li>
+      <li><a href="https://www.amazon.fr/s?k=camping-car+accessoires&tag=TONCODEAFFILIE" target="_blank">Accessoires camping-car</a></li>
+    </ul>
+  </div>
+
+  <h2>Waypoints Waze</h2>
+  <ul id="waypoints"></ul>
+
+  <p id="status"></p>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
