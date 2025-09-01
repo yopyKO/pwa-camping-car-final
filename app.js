@@ -54,7 +54,7 @@ function drawWaypointProgress(){
   progressLine = L.polyline(waypoints,{color:'orange',weight:2,dashArray:'5,5'}).addTo(map);
 }
 
-// --- Calcul itinéraire voiture + camion ---
+// --- Calcul itinéraire voiture + camion avec fallback ---
 async function calcRoutesWithCoords(start,end){
   const startStr=`${start[0]},${start[1]}`;
   const endStr=`${end[0]},${end[1]}`;
@@ -62,15 +62,30 @@ async function calcRoutesWithCoords(start,end){
   document.getElementById("status").innerText="Calcul itinéraires...";
 
   const urlCar = `https://graphhopper.com/api/1/route?point=${startStr}&point=${endStr}&vehicle=car&locale=fr&key=${GH_KEY}&points_encoded=false`;
-  const urlTruck = `https://graphhopper.com/api/1/route?point=${startStr}&point=${endStr}&vehicle=car&locale=fr&key=${GH_KEY}&points_encoded=false`;
+  let truckData;
+
+  // --- Essayer camion, fallback voiture si échoue ---
+  try {
+    const resTruck = await fetch(`https://graphhopper.com/api/1/route?point=${startStr}&point=${endStr}&vehicle=truck&locale=fr&key=${GH_KEY}&points_encoded=false`);
+    truckData = await resTruck.json();
+    if(!truckData.paths || truckData.paths.length===0){
+      console.warn("GraphHopper camion : pas de chemin trouvé, utilisation du profil voiture");
+      const resTruckFallback = await fetch(urlCar);
+      truckData = await resTruckFallback.json();
+      document.getElementById("status").innerText="Camion impossible, itinéraire voiture utilisé ✅";
+    }
+  } catch(err){
+    console.error("Erreur camion, utilisation profil car :", err);
+    const resTruckFallback = await fetch(urlCar);
+    truckData = await resTruckFallback.json();
+    document.getElementById("status").innerText="Camion impossible, itinéraire voiture utilisé ✅";
+  }
 
   try{
-    const [resCar,resTruck] = await Promise.all([fetch(urlCar),fetch(urlTruck)]);
+    const resCar = await fetch(urlCar);
     const carData = await resCar.json();
-    const truckData = await resTruck.json();
-
     if(!carData.paths || carData.paths.length===0) throw new Error("GraphHopper voiture : pas de chemin trouvé");
-    if(!truckData.paths || truckData.paths.length===0) throw new Error("GraphHopper camion : pas de chemin trouvé");
+    if(!truckData.paths || truckData.paths.length===0) throw new Error("GraphHopper fallback camion/voiture : pas de chemin trouvé");
 
     const carCoords = carData.paths[0].points.coordinates.map(c=>[c[1],c[0]]);
     const truckCoords = truckData.paths[0].points.coordinates.map(c=>[c[1],c[0]]);
@@ -107,7 +122,9 @@ async function calcRoutesWithCoords(start,end){
     currentWaypointIndex=0;
     document.getElementById("wp-total").innerText = waypoints.length;
     drawWaypointProgress();
-    document.getElementById("status").innerText="Itinéraire prêt ✅";
+    if(!document.getElementById("status").innerText.includes("Camion impossible")){
+      document.getElementById("status").innerText="Itinéraire prêt ✅";
+    }
 
   } catch(err){
     console.error(err);
