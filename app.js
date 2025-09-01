@@ -114,24 +114,26 @@ async function calcRoutesWithCoords(start,end){
 
 // --- Calculer depuis adresses ---
 async function calcRoutesFromAddresses(){
-  const startAddr=document.getElementById('start').value;
-  const endAddr=document.getElementById('end').value;
+  const startAddr = document.getElementById('start').value;
+  const endAddr = document.getElementById('end').value;
+
   if(!startAddr || !endAddr){
     alert("Merci de saisir départ et arrivée !");
     return;
   }
 
-  document.getElementById("status").innerText="Géocodage des adresses...";
+  document.getElementById("status").innerText = "Géocodage des adresses...";
 
   try{
-    const start=await geocode(startAddr);
-    const end=await geocode(endAddr);
-    await calcRoutesWithCoords(start,end);
+    const start = await geocode(startAddr);  // renvoie [lat, lon]
+    const end = await geocode(endAddr);
+    await calcRoutesWithCoords(start, end);
   } catch(err){
     console.error(err);
-    document.getElementById("status").innerText="Erreur géocodage ❌";
+    document.getElementById("status").innerText = "Erreur géocodage ❌";
   }
 }
+
 
 // --- Suivi GPS et ouverture automatique Waze ---
 function startTrackingWaypoints(){
