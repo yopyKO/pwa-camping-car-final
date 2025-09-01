@@ -1,5 +1,5 @@
 // 🚀 Ta clé GraphHopper
-const GH_KEY = "TA_CLE_GRAPHHOPPER";
+const GH_KEY = "9bba9d9d-5075-451b-b5cb-2fe753b4c638";
 
 const map = L.map('map').setView([48.8566, 2.3522], 6);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
